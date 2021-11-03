@@ -1,0 +1,9 @@
+.idea
+__pycache__
+build
+dist
+include
+Lib
+Scripts
+pyenv.cfg
+main.spec
