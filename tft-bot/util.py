@@ -2,7 +2,9 @@ import psutil
 import PIL
 import os
 import win32gui
+import pyautogui
 from datetime import datetime
+from coordinates import Coordinates
 
 
 def isGameRunning():
@@ -15,7 +17,7 @@ def getPixel(x, y):
 
 def centerClient():
     try:
-        # Speichert den Client um diesen nach dem Game im Vordergrund zu haben
+        # safe client to be in foreground after the match is finished
         leagueClient = win32gui.FindWindow(0, "League of Legends")
         win32gui.SetForegroundWindow(leagueClient)
         win32gui.BringWindowToTop(leagueClient)
@@ -27,14 +29,22 @@ def centerClient():
 
 def centerGame():
     try:
-        # Bringt Spiel in den Vordergrund, wenn es begonnen hat
+        # get game in foreground when started
         leagueGame = win32gui.FindWindow(0, "League of Legends (TM) Client")
-        win32gui.MoveWindow(leagueGame, 50, 50, 1280, 800, True)
-        win32gui.SetForegroundWindow(leagueGame)
-        win32gui.BringWindowToTop(leagueGame)
+        #win32gui.MoveWindow(leagueGame, 50, 50, 1280, 800, True)
+        #win32gui.SetForegroundWindow(leagueGame)
+        #win32gui.BringWindowToTop(leagueGame)
     except():
         return False
     return True
+
+
+def getCordsWithImage(image):
+    btn = pyautogui.locateOnScreen(image, confidence=0.8)
+    if btn is None:
+        return False
+
+    return Coordinates(btn.left + (btn.width / 2), btn.top + (btn.height / 2))
 
 
 def formatConsole():
