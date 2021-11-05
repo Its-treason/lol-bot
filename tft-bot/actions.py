@@ -15,6 +15,8 @@ def StartMatch():
     if acceptMatchBtn:
         pg.moveTo(acceptMatchBtn.x, acceptMatchBtn.y)
         pg.click()
+        # Move the mouse off the acceptBtn so it can be detected again
+        pg.moveTo(50)
 
 
 def buyChamp():
@@ -86,4 +88,36 @@ def GiveItems():
 
 
 def playAgain():
-    pass
+    while True:
+        sleep(3)
+        okBtn = util.getCordsWithImage('images/ok.png')
+        if okBtn:
+            pg.moveTo(okBtn.x, okBtn.y)
+            pg.click()
+            continue
+
+        playBtn = util.getCordsWithImage('images/play_again.png')
+        if playBtn:
+            print(playBtn)
+            pg.moveTo(playBtn.x, playBtn.y)
+            pg.click()
+            continue
+
+        break
+
+def collectItemDrops():
+    blue = util.getCordsWithImage('images/blue_item_drop.png')
+    if blue:
+        pg.moveTo(blue.x, blue.y)
+        pg.mouseDown(button='right')
+        sleep(0.1)
+        pg.mouseUp(button='right')
+        sleep(5)
+
+    grey = util.getCordsWithImage('images/grey_item_drop.png')
+    if grey:
+        pg.moveTo(grey.x, grey.y)
+        pg.mouseDown(button='right')
+        sleep(0.1)
+        pg.mouseUp(button='right')
+        sleep(5)

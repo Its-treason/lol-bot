@@ -11,11 +11,8 @@ if not isRunning:
     util.log('Error', 'League Client is not running!')
     exit(1)
 
-
 try:
     while True:
-        sleep(2)
-
         # join queue
         util.log('Status', 'In Queue')
         util.centerClient()
@@ -42,6 +39,7 @@ try:
 
         while not util.getCordsWithImage('images/exit_now.png'):
             actions.buyChamp()
+            actions.collectItemDrops()
 
         exitNow = util.getCordsWithImage('images/exit_now.png')
         pg.moveTo(exitNow.x, exitNow.y)
@@ -54,6 +52,8 @@ try:
         sleep(10)
         util.centerClient()
         sleep(5)
+
+        util.log('Status', 'Match ended')
 
         # click on "play again" to start new match
         actions.playAgain()
