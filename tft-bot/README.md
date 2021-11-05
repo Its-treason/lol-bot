@@ -24,4 +24,4 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-[???](https://choosealicense.com/licenses/)
+[MIT](https://choosealicense.com/licenses/mit/)
