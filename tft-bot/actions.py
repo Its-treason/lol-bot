@@ -42,22 +42,37 @@ def buyChamp():
         pg.mouseUp(button='left')
 
 
-def levelUp(amountClicks=1):
-    util.log('Action', 'Level Up - ' + str(amountClicks) + ' times')
-    j = 0
-    pg.moveTo(cords.LevelUpBtn.x, cords.LevelUpBtn.y, cords.TIME_BETWEEN)
+def levelUp(count=1):
+    util.log('Action', 'Level Up - ' + str(count) + ' times')
+    levelUpBtn = util.getCordsWithImage('images/level_up.png')
 
-    while j < amountClicks:
-        j = j + 1
+    i = 0
+    while i < count:
+        i = i + 1
+        util.mouseClick(levelUpBtn)
 
-        #util.mouseClick(playBtn)
+
+def refreshShop(count=1):
+    util.log('Action', 'Refresh Shop Up - ' + str(count) + ' times')
+    refreshShopBtn = util.getCordsWithImage('images/refresh_shop.png')
+
+    i = 0
+    while i < count:
+        i = i + 1
+        util.mouseClick(refreshShopBtn)
 
 
 def giveItems():
-    item = util.getCordsWithImage('images/armor.png', confidence=0.5)
-    if item:
-        print('Found Item')
-        pg.moveTo(item.x, item.y)
+    util.log('Action', 'Give Items')
+
+    for item in cords.items:
+        for champ in cords.champs:
+            window = util.focusGame()
+
+            pg.moveTo(item.getCoordinates(window).x, item.getCoordinates(window).y)
+            pg.mouseDown(button='left')
+            pg.moveTo(champ.getCoordinates(window).x, champ.getCoordinates(window).y, 0.05)
+            pg.mouseUp(button='left')
 
 
 def selectAugmentPart():
@@ -93,21 +108,18 @@ def collectDrops():
         util.log('Action', 'Picking up Blue Drop')
         util.mouseClick(cords=blue, button='right')
         sleep(4)
+        giveItems()
 
     grey = util.getCordsWithImage('images/grey_question_mark.png', confidence=0.7, window=window)
     if grey:
         util.log('Action', 'Picking up Grey Drop')
         util.mouseClick(cords=grey, button='right')
         sleep(4)
+        giveItems()
 
     gold = util.getCordsWithImage('images/gold_question_mark.png', confidence=0.6, window=window)
     if gold:
         util.log('Action', 'Picking up Gold')
         util.mouseClick(cords=gold, button='right')
         sleep(4)
-
-    coin = util.getCordsWithImage('images/coin.png', confidence=1, window=window)
-    if coin:
-        util.log('Action', 'Picking up Gold Coin')
-        util.mouseClick(cords=coin, button='right')
-        sleep(4)
+        giveItems()

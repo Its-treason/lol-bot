@@ -2,6 +2,7 @@
 from time import sleep
 import util
 import actions
+# Import OpenVC so it gets included in the finished build, do not remove
 import cv2
 
 util.formatConsole()

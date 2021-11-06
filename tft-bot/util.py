@@ -32,6 +32,7 @@ def focusClient():
     window = windows[0]
     window.restore()
     window.show()
+    window.activate()
     return window
 
 
@@ -43,6 +44,7 @@ def focusGame():
     window = windows[0]
     window.restore()
     window.show()
+    window.activate()
     return window
 
 
