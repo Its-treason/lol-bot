@@ -3,6 +3,7 @@ from time import sleep
 import util
 import cords
 import actions
+import cv2
 
 util.formatConsole()
 opened = util.centerClient()

@@ -2,13 +2,14 @@
 from time import sleep
 import util
 import actions
-import pyautogui as pg
+import cv2
 
 util.formatConsole()
 
 isRunning = util.focusClient()
 if not isRunning:
     util.log('Error', 'League Client is not running!')
+    sleep(5)
     exit(1)
 
 try:
@@ -42,7 +43,6 @@ try:
             actions.selectAugmentPart()
             actions.buyChamp()
             actions.collectDrops()
-            actions.giveItems()
 
         exitBtn = util.getCordsWithImage('images/exit_now.png')
         if not exitBtn:

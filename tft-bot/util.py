@@ -4,6 +4,7 @@ from time import sleep
 import psutil
 import pyautogui
 from coordinates import Coordinates
+import sys
 
 
 def isGameRunning():
@@ -46,6 +47,8 @@ def focusGame():
 
 
 def getCordsWithImage(image, confidence=0.8, grayscale=False, window=None):
+    image = getResourcePath(image)
+
     if window is not None:
         btn = pyautogui.locateOnWindow(image, window.title, confidence=confidence, grayscale=grayscale)
     else:
@@ -78,3 +81,14 @@ def log(loc='', msg=''):
     date = '[' + datetime.today().strftime('%Y-%m-%d %H:%M:%S') + '] '
 
     print(date + loc + msg)
+
+
+def getResourcePath(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath('.')
+
+    return os.path.join(base_path, relative_path)
