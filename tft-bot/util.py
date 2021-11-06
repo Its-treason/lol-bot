@@ -1,9 +1,8 @@
-import psutil
-import PIL
 import os
-import win32gui
-import pyautogui
 from datetime import datetime
+from time import sleep
+import psutil
+import pyautogui
 from coordinates import Coordinates
 
 
@@ -11,36 +10,47 @@ def isGameRunning():
     return "League of Legends.exe" in (p.name() for p in psutil.process_iter())
 
 
-def getPixel(x, y):
-    return PIL.ImageGrab.grab().load()[x, y]
+def mouseClick(cords=None, button='left'):
+    if cords is not None:
+        pyautogui.moveTo(cords.x, cords.y)
+    elif cords is not Coordinates:
+        raise Exception('cords must be of Type Coordinates')
+
+    # MouseUp before MouseDown to make sure the mouse is Up
+    pyautogui.mouseUp(button=button)
+    pyautogui.mouseDown(button=button)
+    sleep(0.1)
+    pyautogui.mouseUp(button=button)
 
 
-def centerClient():
-    try:
-        # safe client to be in foreground after the match is finished
-        leagueClient = win32gui.FindWindow(0, "League of Legends")
-        win32gui.SetForegroundWindow(leagueClient)
-        win32gui.BringWindowToTop(leagueClient)
-        win32gui.MoveWindow(leagueClient, 50, 50, 1280, 720, True)
-    except():
+def focusClient():
+    windows = pyautogui.getWindowsWithTitle("League of Legends")
+    if 0 == len(windows):
         return False
-    return True
+
+    window = windows[0]
+    window.restore()
+    window.show()
+    return window
 
 
-def centerGame():
-    try:
-        # get game in foreground when started
-        leagueGame = win32gui.FindWindow(0, "League of Legends (TM) Client")
-        #win32gui.MoveWindow(leagueGame, 50, 50, 1280, 800, True)
-        #win32gui.SetForegroundWindow(leagueGame)
-        #win32gui.BringWindowToTop(leagueGame)
-    except():
+def focusGame():
+    windows = pyautogui.getWindowsWithTitle("League of Legends (TM) Client")
+    if 0 == len(windows):
         return False
-    return True
+
+    window = windows[0]
+    window.restore()
+    window.show()
+    return window
 
 
-def getCordsWithImage(image):
-    btn = pyautogui.locateOnScreen(image, confidence=0.8)
+def getCordsWithImage(image, confidence=0.8, grayscale=False, window=None):
+    if window is not None:
+        btn = pyautogui.locateOnWindow(image, window.title, confidence=confidence, grayscale=grayscale)
+    else:
+        btn = pyautogui.locateOnScreen(image, confidence=confidence, grayscale=grayscale)
+
     if btn is None:
         return False
 
