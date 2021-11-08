@@ -1,8 +1,30 @@
 import os
 from time import time
+from base64 import b64encode
+from os import urandom
 
 print('Building LOL-BOT and TFT-BOT...')
 startTime = int(time())
+
+# Create build.ini
+checksum = str(b64encode(urandom(18)).decode('utf-8'))
+version = 'v' + input('Enter version: ')
+conf = """
+[build]
+buildNumber=%s
+version=%s
+""" % (checksum, version)
+if not os.path.isdir('tft-bot/build'):
+    os.mkdir('tft-bot/build')
+f = open('tft-bot/build/build.ini', 'w')
+f.write(conf)
+f.close()
+if not os.path.isdir('lol-bot/build'):
+    os.mkdir('lol-bot/build')
+f = open('lol-bot/build/build.ini', 'w')
+f.write(conf)
+f.close()
+
 
 print("""
 =====================================
@@ -18,11 +40,13 @@ pyinstaller
     --console
     --clean
     --noconfirm
-    --log-level WARN
+    --log-level DEBUG
     --collect-all cv2
     -i tft-bot.ico
-    --add-data ./images/*.png;images
+    --add-data ./images/*;images
     --add-data ./images/champions/*.png;images/champions
+    --add-data ./build/*.ini;build
+    --hidden-import cv2
 """.replace('\n', ' '))
 os.chdir('..')
 
@@ -46,10 +70,12 @@ pyinstaller
     --console
     --clean
     --noconfirm
-    --log-level WARN
+    --log-level DEBUG
     --collect-all cv2
     -i lol-bot.ico
-    --add-data ./images/*.png;images
+    --add-data ./images/*;images
+    --add-data ./build/*.ini;build
+    --hidden-import cv2
 """.replace('\n', ' '))
 os.chdir('..')
 
@@ -59,10 +85,26 @@ print("""
 =====================================
 """)
 
+# Copy Executables
 if not os.path.isdir('./dist'):
     os.mkdir('./dist')
 
-os.replace('./tft-bot/dist/main.exe', './dist/tft-bot.exe')
-os.replace('./lol-bot/dist/main.exe', './dist/lol-bot.exe')
+os.replace('./tft-bot/dist/main.exe', './dist/tft-bot__%s.exe' % version)
+os.replace('./lol-bot/dist/main.exe', './dist/lol-bot__%s.exe' % version)
 
-print('Finished build, took ' + str(int(time()) - startTime) + ' seconds')
+# CleanUp
+# Do not delete build folder to make debugging the build easier
+os.rmdir('tft-bot/dist')
+os.remove('tft-bot/main.spec')
+os.rmdir('lol-bot/dist')
+os.remove('lol-bot/main.spec')
+
+buildTime = str(int(time()) - startTime)
+print("""
+Finished build, took %s seconds!
+
+== Build variables ==
+Version        : %s
+Build-Checksum : %s
+== Build variables ==
+""" % (buildTime, version, checksum))

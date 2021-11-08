@@ -5,6 +5,7 @@ import psutil
 import pyautogui
 from coordinates import Coordinates
 import sys
+import configparser
 
 
 def isGameRunning():
@@ -64,15 +65,23 @@ def getCordsWithImage(image, confidence=0.8, grayscale=False, window=None):
 
 def formatConsole():
     os.system('cls')
+
+    version = getEnvVar('version')
+    if version is None:
+        version = 'vDEV'
+    buildNumber = getEnvVar('buildNumber')
+    if buildNumber is None:
+        buildNumber = 'Not available'
+
     welcome = """
+Build-Checksum: %s
   ______ ______ ______      ____          __
  /_  __// ____//_  __/     / __ ) ____   / /_
   / /  / /_     / /______ / __  |/ __ \ / __/
  / /  / __/    / //_____// /_/ // /_/ // /_
 /_/  /_/      /_/       /_____/ \____/ \__/
-  github.com/its-treason/lol-bot - v11.22.1
-
-"""
+  github.com/its-treason/lol-bot - %s
+""" % (buildNumber, version)
     print(welcome)
 
 
@@ -94,3 +103,22 @@ def getResourcePath(relative_path):
         base_path = os.path.abspath('.')
 
     return os.path.join(base_path, relative_path)
+
+
+def getEnvVar(var):
+    print(os.listdir(getResourcePath('.')))
+    print(os.listdir(getResourcePath('./build')))
+
+    f = open(getResourcePath('build/build.ini'), 'r')
+    print(f.read())
+
+    if not os.path.exists(getResourcePath('build/build.ini')):
+        return None
+
+    conf = configparser.ConfigParser()
+    conf.read(getResourcePath('build/build.ini'))
+
+    if var in conf['build']:
+        return conf['build'][var]
+
+    return None
