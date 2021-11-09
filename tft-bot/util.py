@@ -6,6 +6,7 @@ import pyautogui
 from coordinates import Coordinates
 import sys
 import configparser
+from traceback import format_exc
 
 
 def isGameRunning():
@@ -18,11 +19,14 @@ def mouseClick(cords=None, button='left'):
     elif cords is not Coordinates:
         raise Exception('cords must be of Type Coordinates')
 
-    # MouseUp before MouseDown to make sure the mouse is Up
-    pyautogui.mouseUp(button=button)
-    pyautogui.mouseDown(button=button)
-    sleep(0.1)
-    pyautogui.mouseUp(button=button)
+    try:
+        # MouseUp before MouseDown to make sure the mouse is Up
+        pyautogui.mouseUp(button=button)
+        pyautogui.mouseDown(button=button)
+        sleep(0.1)
+        pyautogui.mouseUp(button=button)
+    except Exception:
+        logError(format_exc())
 
 
 def focusClient():
@@ -31,9 +35,12 @@ def focusClient():
         return False
 
     window = windows[0]
-    window.restore()
-    window.show()
-    window.activate()
+    try:
+        window.restore()
+        window.show()
+        window.activate()
+    except Exception:
+        logError(format_exc())
     return window
 
 
@@ -43,19 +50,26 @@ def focusGame():
         return False
 
     window = windows[0]
-    window.restore()
-    window.show()
-    window.activate()
+    try:
+        window.restore()
+        window.show()
+        window.activate()
+    except Exception:
+        logError(format_exc())
     return window
 
 
 def getCordsWithImage(image, confidence=0.8, grayscale=False, window=None):
     image = getResourcePath(image)
 
-    if window is not None:
-        btn = pyautogui.locateOnWindow(image, window.title, confidence=confidence, grayscale=grayscale)
-    else:
-        btn = pyautogui.locateOnScreen(image, confidence=confidence, grayscale=grayscale)
+    btn = None
+    try:
+        if window is not None:
+            btn = pyautogui.locateOnWindow(image, window.title, confidence=confidence, grayscale=grayscale)
+        else:
+            btn = pyautogui.locateOnScreen(image, confidence=confidence, grayscale=grayscale)
+    except Exception:
+        pass
 
     if btn is None:
         return False
@@ -94,6 +108,16 @@ def log(loc='', msg=''):
     print(date + loc + msg)
 
 
+def logError(errorMsg):
+    log('Error', 'An Error occurred during execution')
+    print("""
+    ======== Start of Debug output ========
+    %s
+    ======== End of Debug output ========
+    If this happens more frequently, report this error at https://github.com/Its-treason/lol-bot/issues
+    """ % errorMsg)
+
+
 def getResourcePath(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -106,12 +130,6 @@ def getResourcePath(relative_path):
 
 
 def getEnvVar(var):
-    print(os.listdir(getResourcePath('.')))
-    print(os.listdir(getResourcePath('./build')))
-
-    f = open(getResourcePath('build/build.ini'), 'r')
-    print(f.read())
-
     if not os.path.exists(getResourcePath('build/build.ini')):
         return None
 

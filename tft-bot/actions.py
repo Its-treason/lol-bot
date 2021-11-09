@@ -1,7 +1,7 @@
-import pyautogui as pg
 from time import sleep
-import util
+import pyautogui as pg
 import coordinates as cords
+import util
 
 
 def startMatch():
@@ -13,7 +13,7 @@ def startMatch():
         pg.click()
         return
 
-    acceptMatchBtn = util.getCordsWithImage('images/accept_match.png', window=window)
+    acceptMatchBtn = util.getCordsWithImage('images/accept_match.png', window=window, confidence=0.9)
     if acceptMatchBtn:
         pg.moveTo(acceptMatchBtn.x, acceptMatchBtn.y)
         pg.click()
@@ -82,6 +82,16 @@ def selectAugmentPart():
     if augment:
         util.log('Action', 'Picking Augment')
         util.mouseClick(augment)
+        sleep(1)
+
+
+def spendGold():
+    window = util.focusGame()
+
+    enoughCoins = util.getCordsWithImage('images/5x_coins.png', window=window, confidence=0.9)
+    if enoughCoins:
+        util.log('Action', 'Spending Gold')
+        levelUp(4)
 
 
 def playAgain():

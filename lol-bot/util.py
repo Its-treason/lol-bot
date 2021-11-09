@@ -106,12 +106,6 @@ def getResourcePath(relative_path):
 
 
 def getEnvVar(var):
-    print(os.listdir(getResourcePath('.')))
-    print(os.listdir(getResourcePath('./build')))
-
-    f = open(getResourcePath('build/build.ini'), 'r')
-    print(f.read())
-
     if not os.path.exists(getResourcePath('build/build.ini')):
         return None
 

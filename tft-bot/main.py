@@ -1,7 +1,7 @@
-#! python3
 from time import sleep
 import util
 import actions
+from traceback import print_exc
 
 util.formatConsole()
 
@@ -11,7 +11,8 @@ if not isRunning:
     sleep(5)
     exit(1)
 
-try:
+
+def mainLoop():
     while True:
         # join queue
         util.log('Status', 'In Queue')
@@ -38,10 +39,13 @@ try:
         util.log('Status', 'Match Started')
 
         while not util.getCordsWithImage('images/exit_now.png') and not util.getCordsWithImage('images/continue.png'):
-            sleep(1)
+            sleep(2)
             actions.selectAugmentPart()
             actions.buyChamp()
             actions.collectDrops()
+            actions.spendGold()
+
+        sleep(3)
 
         exitBtn = util.getCordsWithImage('images/exit_now.png')
         if not exitBtn:
@@ -57,5 +61,18 @@ try:
         # click on "play again" to start new match
         actions.playAgain()
 
-except KeyboardInterrupt:
-    util.log('Status', 'Got KeyboardInterrupt - Exiting')
+
+try:
+    mainLoop()
+except (KeyboardInterrupt, Exception) as exception:
+    if isinstance(exception, KeyboardInterrupt):
+        util.log('Status', 'Got KeyboardInterrupt - Exiting')
+    else:
+        util.log('Error', 'An Error occurred during execution')
+        print('======== Start of Debug output ========')
+        print_exc()
+        print('======== End of Debug output ========')
+        print('Please report this Issue at https://github.com/Its-treason/lol-bot/issues')
+        print('')
+        sleep(1)
+        input('Press any Key to exit...')
