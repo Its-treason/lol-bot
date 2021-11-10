@@ -38,19 +38,19 @@ def mainLoop():
 
         util.log('Status', 'Match Started')
 
-        while not util.getCordsWithImage('images/exit_now.png') and not util.getCordsWithImage('images/continue.png'):
+        while actions.canRunMainLoop():
             sleep(2)
             actions.selectAugmentPart()
             actions.buyChamp()
             actions.collectDrops()
             actions.spendGold()
 
-        sleep(3)
-
         exitBtn = util.getCordsWithImage('images/exit_now.png')
         if not exitBtn:
             exitBtn = util.getCordsWithImage('images/continue.png')
-        util.mouseClick(exitBtn)
+
+        if exitBtn:
+            util.mouseClick(exitBtn)
 
         util.log('Status', 'Match ended')
 

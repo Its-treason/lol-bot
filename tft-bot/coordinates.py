@@ -10,6 +10,9 @@ class RelativCoordinates:
         self.y = yy
 
     def getCoordinates(self, window):
+        if not window:
+            raise Exception('Argument window must be set')
+
         absuluteX = window.left + window.width * self.x / 100
         absuluteY = window.top + window.height * self.y / 100
 

@@ -64,11 +64,12 @@ def refreshShop(count=1):
 
 def giveItems():
     util.log('Action', 'Give Items')
+    window = util.focusGame()
+    if not window:
+        return
 
     for item in cords.items:
         for champ in cords.champs:
-            window = util.focusGame()
-
             pg.moveTo(item.getCoordinates(window).x, item.getCoordinates(window).y)
             pg.mouseDown(button='left')
             pg.moveTo(champ.getCoordinates(window).x, champ.getCoordinates(window).y, 0.05)
@@ -133,3 +134,9 @@ def collectDrops():
         util.mouseClick(cords=gold, button='right')
         sleep(4)
         giveItems()
+
+
+def canRunMainLoop():
+    return not util.getCordsWithImage('images/exit_now.png') and \
+           not util.getCordsWithImage('images/continue.png') and \
+           util.isGameRunning()
