@@ -1,80 +1,63 @@
 #! python3
 from time import sleep
 import util
-import cords
 import actions
-import cv2
+from traceback import print_exc, format_exc
+from time import time
 
 util.formatConsole()
-opened = util.centerClient()
+opened = util.focusClient()
 
 if not opened:
     util.log(msg='Error: League Client not running!')
     exit()
 
-clientCheckPixel1 = util.getPixel(cords.ClientCheckPos1.x, cords.ClientCheckPos1.y)
-clientCheckPixel2 = util.getPixel(cords.ClientCheckPos2.x, cords.ClientCheckPos2.y)
 
-try:
+def mainLoop():
     while True:
 
         while not util.isGameRunning():
             sleep(2)
+            actions.startMatch()
 
-            clientCheckPixelNow1 = util.getPixel(cords.ClientCheckPos1.x, cords.ClientCheckPos1.y)
-            clientCheckPixelNow2 = util.getPixel(cords.ClientCheckPos2.x, cords.ClientCheckPos2.y)
-
-            if (clientCheckPixel1 != clientCheckPixelNow1) & (clientCheckPixel2 != clientCheckPixelNow2):
-                util.log('Status', 'Accepting Match')
-                actions.acceptMatch()
-            elif (clientCheckPixel1 == clientCheckPixelNow1) & (clientCheckPixel2 != clientCheckPixelNow2):
-                util.log('Status', 'Selecting Champ')
-                sleep(1)
-                actions.selectChamp()
-            else:
-                util.log('Status', 'Waiting for Lobby')
-                actions.findMatch()
-
-
-        # Warten damit das LeageGame sichtbar ist
+        # Wait for the game to be visible
         sleep(10)
 
-        util.centerGame()
-
-        # Zeichnet Pixel des Ladebildschirms auf
-        sleep(2)
-        pixelLoad = util.getPixel(cords.Pos1.x, cords.Pos1.y)
         util.log('Status', 'In loading screen')
+        util.focusGame()
 
-        # Pixel des Ladebildschirms vergleichen um Spiel zu erkennen
-        while util.getPixel(cords.Pos1.x, cords.Pos1.y) == pixelLoad:
+        while not util.getCordsWithImage('images/settings_icon.png', confidence=0.7):
             sleep(2)
 
         util.log('Status', 'Game started')
-
-        actions.levelUp()
-        sleep(12)
-        actions.move(-10)
-        sleep(60)
-
-        i = 0
+        startTime = int(time())
 
         while util.isGameRunning():
-            sleep(10)
-
-            if i % 5 == 0:
-                actions.levelUp()
-                actions.doAbilities()
-
-            actions.move(i)
-            i = i + 1
+            try:
+                actions.mainActions(startTime)
+            except Exception:
+                util.logError(format_exc())
 
         util.log('Status', 'Game ended')
 
-        while clientCheckPixel2 != util.getPixel(cords.ClientCheckPos2.x, cords.ClientCheckPos2.y):
+        while not util.getCordsWithImage('images/find_match.png'):
             sleep(1)
-            actions.findMatch()
+            actions.gotoLobby()
 
-except KeyboardInterrupt:
-    util.log('Status', 'Got KeyboardInterrupt - Exiting')
-    exit()
+
+try:
+    mainLoop()
+except (KeyboardInterrupt, Exception) as exception:
+    if isinstance(exception, KeyboardInterrupt):
+        util.log('Status', 'Got KeyboardInterrupt - Exiting')
+    else:
+        util.log('Error', 'An Error occurred during execution')
+        print('======== Start of Debug output ========')
+        print_exc()
+        print('======== End of Debug output ========')
+        print('Please report this Issue at https://github.com/Its-treason/lol-bot/issues')
+        print('')
+        sleep(1)
+        input('Press any Key to exit...')
+
+    sleep(5)

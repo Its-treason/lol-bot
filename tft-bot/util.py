@@ -111,11 +111,11 @@ def log(loc='', msg=''):
 def logError(errorMsg):
     log('Error', 'An Error occurred during execution')
     print("""
-    ======== Start of Debug output ========
-    %s
-    ======== End of Debug output ========
-    If this happens more frequently, report this error at https://github.com/Its-treason/lol-bot/issues
-    """ % errorMsg)
+======== Start of Debug output ========
+%s
+======== End of Debug output ========
+If this happens more frequently, report this error at https://github.com/Its-treason/lol-bot/issues
+""" % errorMsg)
 
 
 def getResourcePath(relative_path):

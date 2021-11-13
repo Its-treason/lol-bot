@@ -1,7 +1,7 @@
 from time import sleep
 import util
 import actions
-from traceback import print_exc
+from traceback import print_exc, format_exc
 
 util.formatConsole()
 
@@ -39,11 +39,14 @@ def mainLoop():
         util.log('Status', 'Match Started')
 
         while actions.canRunMainLoop():
-            sleep(2)
-            actions.selectAugmentPart()
-            actions.buyChamp()
-            actions.collectDrops()
-            actions.spendGold()
+            try:
+                sleep(2)
+                actions.selectAugmentPart()
+                actions.buyChamp()
+                actions.collectDrops()
+                actions.spendGold()
+            except Exception:
+                util.logError(format_exc())
 
         exitBtn = util.getCordsWithImage('images/exit_now.png')
         if not exitBtn:

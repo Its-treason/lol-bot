@@ -5,8 +5,11 @@ import pydirectinput as di
 from time import sleep
 from datetime import datetime
 import sys
+from pygetwindow import PyGetWindowException
+
 from coordinates import Coordinates
 import configparser
+
 
 def isGameRunning():
     return "League of Legends.exe" in (p.name() for p in psutil.process_iter())
@@ -14,9 +17,7 @@ def isGameRunning():
 
 def mouseClick(cords=None, button='left'):
     if cords is not None:
-        di.moveTo(cords.x, cords.y)
-    elif cords is not Coordinates:
-        raise Exception('cords must be of Type Coordinates')
+        di.moveTo(int(cords.x), int(cords.y))
 
     # MouseUp before MouseDown to make sure the mouse is Up
     di.mouseUp(button=button)
@@ -25,15 +26,24 @@ def mouseClick(cords=None, button='left'):
     di.mouseUp(button=button)
 
 
+def pressBtn(btn):
+    di.keyDown(btn)
+    sleep(0.1)
+    di.keyUp(btn)
+
+
 def focusClient():
     windows = pyautogui.getWindowsWithTitle("League of Legends")
     if 0 == len(windows):
         return False
 
     window = windows[0]
-    window.restore()
-    window.show()
-    window.activate()
+    try:
+        window.restore()
+        window.show()
+        window.activate()
+    except Exception:
+        pass
     return window
 
 
@@ -43,19 +53,25 @@ def focusGame():
         return False
 
     window = windows[0]
-    window.restore()
-    window.show()
-    window.activate()
+    try:
+        window.restore()
+        window.show()
+        window.activate()
+    except Exception:
+        pass
     return window
 
 
 def getCordsWithImage(image, confidence=0.8, grayscale=False, window=None):
     image = getResourcePath(image)
 
-    if window is not None:
-        btn = pyautogui.locateOnWindow(image, window.title, confidence=confidence, grayscale=grayscale)
-    else:
-        btn = pyautogui.locateOnScreen(image, confidence=confidence, grayscale=grayscale)
+    try:
+        if window:
+            btn = pyautogui.locateOnWindow(image, window.title, confidence=confidence, grayscale=grayscale)
+        else:
+            btn = pyautogui.locateOnScreen(image, confidence=confidence, grayscale=grayscale)
+    except PyGetWindowException:
+        return False
 
     if btn is None:
         return False
@@ -92,6 +108,16 @@ def log(loc='', msg=''):
     date = '[' + datetime.today().strftime('%Y-%m-%d %H:%M:%S') + '] '
 
     print(date + loc + msg)
+
+
+def logError(errorMsg):
+    log('Error', 'An Error occurred during execution')
+    print("""
+======== Start of Debug output ========
+%s
+======== End of Debug output ========
+If this happens more frequently, report this error at https://github.com/Its-treason/lol-bot/issues
+""" % errorMsg)
 
 
 def getResourcePath(relative_path):

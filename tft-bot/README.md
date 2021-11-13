@@ -2,26 +2,44 @@
 
 TFT-Bot is a Python based script that can automatically play TFT games for you.
 
-Through this Bot it is possible for you to get Tokens over night.
+Through this Bot it is possible for you to get Tokens or XP for the Battle-Pass overnight.
 
-## Installation
+## Setup
 
-Install the .exe from [here](http://j.gs/FxAZ).
+### Creating the binary from source
 
-## Usage
+> These steps are only if you want to build the binary from source. If you already have a binary you can skip this step
 
-Once installed you need to change your League-Client Resolution to 1280x720 and your Ingame Resolution to 1280x800.
+Install all required packages
 
-After you have done this you only need to start the .exe and hit ´enter´ once.
+````bash
+pip install -r requirements.txt
+````
 
-Now the Bot will play the Games for you.
+Start the build
 
-## Contributing
+````
+python ./build.py
+````
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+When asked, enter a version for the build. You may leave the version emtpy
 
-Please make sure to update tests as appropriate.
+The binary will be placed in the dist folder, with the naming scheme `tft-bot__v[Version Name].exe`
 
-## License
+### Game settings
 
-[MIT](https://choosealicense.com/licenses/mit/)
+Make sure to set the following settings. The bot will not work without them
+
+> The default settings are used for base settings, for best result you might want to reset all settings to default
+
+> You can set the settings easily in the practice tool
+
+- Set your clients and games language to english
+- `Video` > `Resolution`: Should be set to `1280x800`, other values may also work
+- `Video` > `Window Mode`: Must be set to `Windowed` or `Borderless`
+
+### Starting the bot
+
+Before starting the bot u must enter a Tft lobby. 
+The bot will take over the mouse and focus the Client / Game aggressively.
+After starting the bot you can exit by pressing `Ctrl` + `C` while the bots window is in focus.

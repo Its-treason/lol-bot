@@ -96,8 +96,10 @@ os.replace('./lol-bot/dist/main.exe', './dist/lol-bot__%s.exe' % version)
 # Do not delete build folder to make debugging the build easier
 os.rmdir('tft-bot/dist')
 os.remove('tft-bot/main.spec')
+os.remove('tft-bot/build/build.ini')
 os.rmdir('lol-bot/dist')
 os.remove('lol-bot/main.spec')
+os.remove('lol-bot/build/build.ini')
 
 buildTime = str(int(time()) - startTime)
 print("""

@@ -3,3 +3,4 @@ Pillow~=8.4.0
 PyDirectInput~=1.0.4
 PyAutoGUI~=0.9.53
 opencv-python==4.5.3.56
+PyGetWindow~=0.0.9
