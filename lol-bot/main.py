@@ -4,9 +4,12 @@ import util
 import actions
 from traceback import print_exc, format_exc
 from time import time
+from win32api import GetKeyState
+from win32con import VK_CAPITAL
 
 util.formatConsole()
 opened = util.focusClient()
+actions.disableCapsLock()
 
 if not opened:
     util.log(msg='Error: League Client not running!')
@@ -38,7 +41,13 @@ def mainLoop():
             except Exception:
                 util.logError(format_exc())
 
+            if GetKeyState(VK_CAPITAL):
+                raise KeyboardInterrupt()
+
         util.log('Status', 'Game ended')
+
+        # League client will freeze sometime after match ending, that causes the bot to crash
+        sleep(10)
 
         while not util.getCordsWithImage('images/find_match.png'):
             sleep(1)

@@ -4,6 +4,8 @@ import actions
 from traceback import print_exc, format_exc
 
 util.formatConsole()
+util.log('Info', 'Exit by pressing Ctrl+C or activating Caps-Lock')
+actions.disableCapsLock()
 
 isRunning = util.focusClient()
 if not isRunning:

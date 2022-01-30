@@ -40,6 +40,6 @@ Make sure to set the following settings. The bot will not work without them
 
 ### Starting the bot
 
-Before starting the bot u must enter a Tft lobby. 
+Before starting the bot u must enter a Tft lobby.
 The bot will take over the mouse and focus the Client / Game aggressively.
-After starting the bot you can exit by pressing `Ctrl` + `C` while the bots window is in focus.
+After starting the bot you can exit by pressing `Ctrl` + `C` while the bots window is in focus or by activating caps-lock.

@@ -8,7 +8,6 @@ import sys
 import configparser
 from traceback import format_exc
 
-
 def isGameRunning():
     return "League of Legends.exe" in (p.name() for p in psutil.process_iter())
 

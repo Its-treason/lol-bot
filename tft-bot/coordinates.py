@@ -13,10 +13,10 @@ class RelativCoordinates:
         if not window:
             raise Exception('Argument window must be set')
 
-        absuluteX = window.left + window.width * self.x / 100
-        absuluteY = window.top + window.height * self.y / 100
+        absoluteX = window.left + window.width * self.x / 100
+        absoluteY = window.top + window.height * self.y / 100
 
-        return Coordinates(absuluteX, absuluteY)
+        return Coordinates(absoluteX, absoluteY)
 
 
 item1 = RelativCoordinates(11.3, 69.4)

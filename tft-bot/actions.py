@@ -2,6 +2,8 @@ from time import sleep
 import pyautogui as pg
 import coordinates as cords
 import util
+from win32api import GetKeyState
+from win32con import VK_CAPITAL
 
 
 def startMatch():
@@ -98,7 +100,7 @@ def spendGold():
 def playAgain():
     while True:
         sleep(3)
-        okBtn = util.getCordsWithImage('images/ok.png')
+        okBtn = util.getCordsWithImage('images/ok.png', confidence=0.75)
         if okBtn:
             util.mouseClick(okBtn)
             continue
@@ -137,6 +139,15 @@ def collectDrops():
 
 
 def canRunMainLoop():
+    if GetKeyState(VK_CAPITAL):
+        raise KeyboardInterrupt()
+
     return not util.getCordsWithImage('images/exit_now.png') and \
            not util.getCordsWithImage('images/continue.png') and \
            util.isGameRunning()
+
+
+def disableCapsLock():
+    if GetKeyState(VK_CAPITAL):
+        pg.press('capslock')
+        util.log('Info', 'Disabled Caps-Lock')

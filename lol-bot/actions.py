@@ -3,6 +3,8 @@ import pyautogui as pg
 import pydirectinput as di
 import coordinates
 from time import time
+from win32api import GetKeyState
+from win32con import VK_CAPITAL
 
 import util
 
@@ -37,7 +39,7 @@ def startMatch():
 
 def gotoLobby():
     window = util.focusClient()
-    okBtn = util.getCordsWithImage('images/ok.png', window=window)
+    okBtn = util.getCordsWithImage('images/ok.png', window=window, confidence=0.75)
     if okBtn:
         util.mouseClick(okBtn)
 
@@ -167,3 +169,9 @@ def mainActions(startTime):
         offset = 0
     if currentTime % 2 == 0:
         move(offset)
+
+
+def disableCapsLock():
+    if GetKeyState(VK_CAPITAL):
+        pg.press('capslock')
+        util.log('Info', 'Disabled Caps-Lock')

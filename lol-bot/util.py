@@ -61,7 +61,6 @@ def focusGame():
         pass
     return window
 
-
 def getCordsWithImage(image, confidence=0.8, grayscale=False, window=None):
     image = getResourcePath(image)
 
